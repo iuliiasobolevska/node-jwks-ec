@@ -1,2 +1,2 @@
-export cacheSigningKey from './cache';
-export rateLimitSigningKey from './rateLimit';
+module.exports.cacheSigningKey = require('./cache');
+module.exports.rateLimitSigningKey = require('./rateLimit');

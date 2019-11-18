@@ -1,9 +1,9 @@
-import nock from 'nock';
-import { expect } from 'chai';
+const nock = require('nock');
+const { expect } = require('chai');
 
-import { jwksEndpoint } from './mocks/jwks';
-import { publicKey, privateKey, randomPublicKey1 } from './mocks/keys';
-import { createToken, createSymmetricToken } from './mocks/tokens';
+const { jwksEndpoint } = require('./mocks/jwks');
+const { publicKey, privateKey, randomPublicKey1 } = require('./mocks/keys');
+const { createToken, createSymmetricToken } = require('./mocks/tokens');
 
 const jwksRsa = require('../src');
 const expressJwt = require('express-jwt');

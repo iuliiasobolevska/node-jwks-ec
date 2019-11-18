@@ -1,5 +1,5 @@
-import { ArgumentError } from '../errors';
-import { JwksClient } from '../JwksClient';
+const { ArgumentError } = require('../errors');
+const { JwksClient } = require('../JwksClient');
 
 module.exports.koaJwtSecret = (options = {}) => {
 

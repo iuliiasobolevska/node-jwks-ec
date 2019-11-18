@@ -1,20 +1,19 @@
-import debug from 'debug';
-import request from 'request';
+const debug = require('debug');
+const request = require('request');
 
-import ArgumentError from './errors/ArgumentError';
-import JwksError from './errors/JwksError';
-import SigningKeyNotFoundError from './errors/SigningKeyNotFoundError';
+const JwksError = require('./errors/JwksError');
+const SigningKeyNotFoundError = require('./errors/SigningKeyNotFoundError');
 
-import {
+const {
   certToPEM,
   rsaPublicKeyToPEM
-} from './utils';
-import {
+} = require('./utils');
+const {
   cacheSigningKey,
   rateLimitSigningKey
-} from './wrappers';
+} = require('./wrappers');
 
-export class JwksClient {
+module.exports.JwksClient = class JwksClient {
   constructor(options) {
     this.options = {
       rateLimit: false,
@@ -91,7 +90,7 @@ export class JwksClient {
     });
   }
 
-  getSigningKey = (kid, cb) => {
+  getSigningKey(kid, cb) {
     this.logger(`Fetching signing key for '${kid}'`);
 
     this.getSigningKeys((err, keys) => {
@@ -109,3 +108,4 @@ export class JwksClient {
     });
   }
 }
+

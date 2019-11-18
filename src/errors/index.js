@@ -1,4 +1,4 @@
-export ArgumentError from './ArgumentError';
-export JwksError from './JwksError';
-export JwksRateLimitError from './JwksRateLimitError';
-export SigningKeyNotFoundError from './SigningKeyNotFoundError';
+module.exports.ArgumentError = require('./ArgumentError');
+module.exports.JwksError = require('./JwksError');
+module.exports.JwksRateLimitError = require('./JwksRateLimitError');
+module.exports.SigningKeyNotFoundError = require('./SigningKeyNotFoundError');

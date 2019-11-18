@@ -1,10 +1,10 @@
-import { JwksClient } from './JwksClient';
+const { JwksClient } = require('./JwksClient');
 
-import * as errors from './errors';
-import { hapiJwt2Key, hapiJwt2KeyAsync } from './integrations/hapi';
-import { expressJwtSecret } from './integrations/express';
-import { koaJwtSecret } from './integrations/koa';
-import { passportJwtSecret } from './integrations/passport';
+const errors = require('./errors');
+const { hapiJwt2Key, hapiJwt2KeyAsync } = require('./integrations/hapi');
+const { expressJwtSecret } = require('./integrations/express');
+const { koaJwtSecret } = require('./integrations/koa');
+const { passportJwtSecret } = require('./integrations/passport');
 
 module.exports = (options) => {
   return new JwksClient(options);

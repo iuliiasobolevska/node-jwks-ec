@@ -1,4 +1,4 @@
-export function certToPEM(cert) {
+module.exports.certToPEM = (cert) => {
   cert = cert.match(/.{1,64}/g).join('\n');
   cert = `-----BEGIN CERTIFICATE-----\n${cert}\n-----END CERTIFICATE-----\n`;
   return cert;
@@ -32,7 +32,7 @@ function encodeLengthHex(n) {
 /*
  * Source: http://stackoverflow.com/questions/18835132/xml-to-pem-in-node-js
  */
-export function rsaPublicKeyToPEM(modulusB64, exponentB64) {
+module.exports.rsaPublicKeyToPEM = (modulusB64, exponentB64) => {
   const modulus = new Buffer(modulusB64, 'base64');
   const exponent = new Buffer(exponentB64, 'base64');
   const modulusHex = prepadSigned(modulus.toString('hex'));

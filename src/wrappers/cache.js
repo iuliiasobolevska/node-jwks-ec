@@ -1,8 +1,8 @@
-import ms from 'ms';
-import debug from 'debug';
-import memoizer from 'lru-memoizer';
+const ms = require('ms');
+const debug = require('debug');
+const memoizer = require('lru-memoizer');
 
-export default function(client, { cacheMaxEntries = 5, cacheMaxAge = ms('10h') } = options) {
+ module.exports.default = function(client, { cacheMaxEntries = 5, cacheMaxAge = ms('10h') } = options) {
   const logger = debug('jwks');
   const getSigningKey = client.getSigningKey;
 

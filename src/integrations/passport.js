@@ -1,6 +1,6 @@
-import jwt from 'jsonwebtoken';
-import { ArgumentError } from '../errors';
-import { JwksClient } from '../JwksClient';
+const jwt = require('jsonwebtoken');
+const { ArgumentError } = require('../errors');
+const { JwksClient } = require('../JwksClient');
 
 const handleSigningKeyError = (err, cb) => {
   // If we didn't find a match, can't provide a key.
