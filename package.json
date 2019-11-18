@@ -1,7 +1,7 @@
 {
-  "name": "jwks-rsa",
-  "version": "1.6.0",
-  "description": "Library to retrieve RSA public keys from a JWKS endpoint",
+  "name": "jwks-es",
+  "version": "1.0.0",
+  "description": "Library to retrieve ES public keys from a JWKS endpoint",
   "main": "lib/index.js",
   "types": "index.d.ts",
   "dependencies": {
@@ -51,17 +51,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/auth0/node-jwks-rsa.git"
+    "url": "git+https://gitlab.com/danielcherubini/node-jwks-es.git"
   },
   "keywords": [
     "jwks",
-    "rsa",
+    "es",
     "jwt"
   ],
-  "author": "Auth0",
+  "author": "Daniel Cherubini",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/auth0/node-jwks-rsa/issues"
+    "url": "https://gitlab.com/danielcherubini/node-jwks-es/issues"
   },
-  "homepage": "https://github.com/auth0/node-jwks-rsa#readme"
+  "homepage": "https://gitlab.com/danielcherubini/node-jwks-es#readme"
 }
