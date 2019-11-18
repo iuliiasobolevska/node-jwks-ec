@@ -64,9 +64,8 @@ export class JwksClient {
       if (!keys || !keys.length) {
         return cb(new JwksError('The JWKS endpoint did not contain any keys'));
       }
-
       const signingKeys = keys
-        .filter(key => key.use === 'sig' && key.kty === 'RSA' && key.kid && ((key.x5c && key.x5c.length) || (key.n && key.e)))
+        .filter(key => key.use === 'sig' && key.kty === 'EC' && key.kid && ((key.x5c && key.x5c.length) || (key.n && key.e)))
         .map(key => {
           if (key.x5c && key.x5c.length) {
             return {
