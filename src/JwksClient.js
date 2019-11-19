@@ -28,23 +28,6 @@ module.exports.JwksClient = class JwksClient {
     if (this.options.cache) {
       this.getSigningKey = cacheSigningKey(this, options);
     }
-    this.getSigningKey = (kid, cb) => {
-      this.logger(`Fetching signing key for '${kid}'`);
-
-      this.getSigningKeys((err, keys) => {
-        if (err) {
-          return cb(err);
-        }
-
-        const key = keys.find(k => k.kid === kid);
-        if (key) {
-          return cb(null, key);
-        } else {
-          this.logger(`Unable to find a signing key that matches '${kid}'`);
-          return cb(new SigningKeyNotFoundError(`Unable to find a signing key that matches '${kid}'`));
-        }
-      });
-    }
   }
 
   getKeys(cb) {
@@ -101,6 +84,25 @@ module.exports.JwksClient = class JwksClient {
 
       this.logger('Signing Keys:', signingKeys);
       return cb(null, signingKeys);
+    });
+  }
+
+  getSigningKey(kid, cb) {
+    const vm = this;
+    this.logger(`Fetching signing key for '${kid}'`);
+
+    this.getSigningKeys(function(err, keys) {
+      if (err) {
+        return cb(err);
+      }
+
+      const key = keys.find(k => k.kid === kid);
+      if (key) {
+        return cb(null, key);
+      } else {
+        vm.logger(`Unable to find a signing key that matches '${kid}'`);
+        return cb(new SigningKeyNotFoundError(`Unable to find a signing key that matches '${kid}'`));
+      }
     });
   }
 }
