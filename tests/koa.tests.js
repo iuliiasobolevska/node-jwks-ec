@@ -176,7 +176,7 @@ describe('koaJwtSecret', () => {
             secret: jwksRsa.koaJwtSecret({
                 jwksUri: 'http://localhost/.well-known/jwks.json'
             }),
-            algorithms: ['RS256']
+            algorithms: ['CS256']
         }));
         app.use((ctx) => {
           ctx.body = ctx.state.user;
@@ -191,6 +191,7 @@ describe('koaJwtSecret', () => {
         .set('Authorization', `Bearer ${ token }`)
         .expect(200)
         .end((err, res) => {
+            console.log(res.body)
             expect(res.body.sub).to.equal('john');
             done();
         });

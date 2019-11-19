@@ -1,8 +1,7 @@
 const { ArgumentError } = require('../errors');
 const { JwksClient } = require('../JwksClient');
 
-module.exports.koaJwtSecret = (options = {}) => {
-
+module.exports.koaJwtSecret = function(options = {}) {
   if (!options.jwksUri) {
     throw new ArgumentError('No JWKS URI provided');
   }
@@ -30,7 +29,7 @@ module.exports.koaJwtSecret = (options = {}) => {
         }
 
         // Provide the key.
-        resolve(key.publicKey || key.rsaPublicKey);
+        resolve(key.publicKey || key.privateKey);
       });
     });
   };

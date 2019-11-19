@@ -1,13 +1,11 @@
 const debug = require('debug');
 const request = require('request');
+const jwkToPem = require('jwk-to-pem');
 
 const JwksError = require('./errors/JwksError');
 const SigningKeyNotFoundError = require('./errors/SigningKeyNotFoundError');
 
-const {
-  certToPEM,
-  rsaPublicKeyToPEM
-} = require('./utils');
+
 const {
   cacheSigningKey,
   rateLimitSigningKey
@@ -30,6 +28,23 @@ module.exports.JwksClient = class JwksClient {
     if (this.options.cache) {
       this.getSigningKey = cacheSigningKey(this, options);
     }
+    this.getSigningKey = (kid, cb) => {
+      this.logger(`Fetching signing key for '${kid}'`);
+
+      this.getSigningKeys((err, keys) => {
+        if (err) {
+          return cb(err);
+        }
+
+        const key = keys.find(k => k.kid === kid);
+        if (key) {
+          return cb(null, key);
+        } else {
+          this.logger(`Unable to find a signing key that matches '${kid}'`);
+          return cb(new SigningKeyNotFoundError(`Unable to find a signing key that matches '${kid}'`));
+        }
+      });
+    }
   }
 
   getKeys(cb) {
@@ -48,9 +63,11 @@ module.exports.JwksClient = class JwksClient {
         }
         return cb(err);
       }
+      
+      let keysToReturn = res.body.keys ? res.body.keys : res.body;
 
-      this.logger('Keys:', res.body.keys);
-      return cb(null, res.body.keys);
+      this.logger('Keys:', keysToReturn);
+      return cb(null, keysToReturn);
     });
   }
 
@@ -59,26 +76,23 @@ module.exports.JwksClient = class JwksClient {
       if (err) {
         return cb(err);
       }
-
-      if (!keys || !keys.length) {
+      
+      if (!keys) {
         return cb(new JwksError('The JWKS endpoint did not contain any keys'));
       }
+
+      if (!keys.length) {
+        keys = [keys]
+      }
+
       const signingKeys = keys
-        .filter(key => key.use === 'sig' && key.kty === 'EC' && key.kid && ((key.x5c && key.x5c.length) || (key.n && key.e)))
+        .filter(key => key.use === 'sig' && key.kty === 'EC' && key.kid && (key.x && key.y))
         .map(key => {
-          if (key.x5c && key.x5c.length) {
             return {
               kid: key.kid,
-              nbf: key.nbf,
-              publicKey: certToPEM(key.x5c[0])
+              public: jwkToPem(key),
+              private: key.d ? jwkToPem(key, {private: true}) : undefined
             };
-          } else {
-            return {
-              kid: key.kid,
-              nbf: key.nbf,
-              rsaPublicKey: rsaPublicKeyToPEM(key.n, key.e)
-            };
-          }
         });
 
       if (!signingKeys.length) {
@@ -87,24 +101,6 @@ module.exports.JwksClient = class JwksClient {
 
       this.logger('Signing Keys:', signingKeys);
       return cb(null, signingKeys);
-    });
-  }
-
-  getSigningKey(kid, cb) {
-    this.logger(`Fetching signing key for '${kid}'`);
-
-    this.getSigningKeys((err, keys) => {
-      if (err) {
-        return cb(err);
-      }
-
-      const key = keys.find(k => k.kid === kid);
-      if (key) {
-        return cb(null, key);
-      } else {
-        this.logger(`Unable to find a signing key that matches '${kid}'`);
-        return cb(new SigningKeyNotFoundError(`Unable to find a signing key that matches '${kid}'`));
-      }
     });
   }
 }
