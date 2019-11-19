@@ -1,7 +1,7 @@
 const nock = require('nock');
 const { expect } = require('chai');
 
-const { x5cSingle } = require('./keys');
+const { single } = require('./keys');
 const { JwksClient } = require('../src/JwksClient');
 
 describe('JwksClient (cache)', () => {
@@ -15,11 +15,11 @@ describe('JwksClient (cache)', () => {
     it('should cache requests', (done) => {
       nock(jwksHost)
         .get('/.well-known/jwks.json')
-        .reply(200, x5cSingle);
+        .reply(200, single);
 
       const client = new JwksClient({
         cache: true,
-        jwksUri: `${jwksHost}/.well-known/jwks.json`
+        jwksUri: `${jwksHost}/.well-known/jwks.json`,
       });
 
       client.getSigningKey('NkFCNEE1NDFDNTQ5RTQ5OTE1QzRBMjYyMzY0NEJCQTJBMjJBQkZCMA', (err, key) => {
@@ -27,6 +27,8 @@ describe('JwksClient (cache)', () => {
         nock.cleanAll();
 
         client.getSigningKey('NkFCNEE1NDFDNTQ5RTQ5OTE1QzRBMjYyMzY0NEJCQTJBMjJBQkZCMA', (err, key) => {
+          expect(err).to.be.null;
+          expect(key).not.to.be.undefined;
           expect(key.kid).to.equal('NkFCNEE1NDFDNTQ5RTQ5OTE1QzRBMjYyMzY0NEJCQTJBMjJBQkZCMA');
           done();
         });
@@ -36,11 +38,11 @@ describe('JwksClient (cache)', () => {
     it('should cache requests per kid', (done) => {
       nock(jwksHost)
         .get('/.well-known/jwks.json')
-        .reply(200, x5cSingle);
+        .reply(200, single);
 
       const client = new JwksClient({
         cache: true,
-        jwksUri: `${jwksHost}/.well-known/jwks.json`
+        jwksUri: `${jwksHost}/.well-known/jwks.json`,
       });
 
       client.getSigningKey('NkFCNEE1NDFDNTQ5RTQ5OTE1QzRBMjYyMzY0NEJCQTJBMjJBQkZCMA', (err, key) => {

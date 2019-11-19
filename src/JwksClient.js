@@ -1,37 +1,36 @@
-const debug = require('debug');
-const request = require('request');
-const jwkToPem = require('jwk-to-pem');
+const debug = require('debug')
+const request = require('request')
+const jwkToPem = require('jwk-to-pem')
+const LRU = require('lru-cache')
 
-const JwksError = require('./errors/JwksError');
-const SigningKeyNotFoundError = require('./errors/SigningKeyNotFoundError');
-
+const JwksError = require('./errors/JwksError')
+const SigningKeyNotFoundError = require('./errors/SigningKeyNotFoundError')
 
 const {
-  cacheSigningKey,
   rateLimitSigningKey
-} = require('./wrappers');
+} = require('./wrappers')
 
 module.exports.JwksClient = class JwksClient {
-  constructor(options) {
+  constructor (options) {
     this.options = {
       rateLimit: false,
       cache: false,
       strictSsl: true,
       ...options
-    };
-    this.logger = debug('jwks');
+    }
+    this.logger = debug('jwks')
 
     // Initialize wrappers.
     if (this.options.rateLimit) {
-      this.getSigningKey = rateLimitSigningKey(this, options);
+      this.getSigningKey = rateLimitSigningKey(this, options)
     }
     if (this.options.cache) {
-      this.getSigningKey = cacheSigningKey(this, options);
+      this.cache = new LRU(options)
     }
   }
 
-  getKeys(cb) {
-    this.logger(`Fetching keys from '${this.options.jwksUri}'`);
+  getKeys (cb) {
+    this.logger(`Fetching keys from '${this.options.jwksUri}'`)
     request({
       json: true,
       uri: this.options.jwksUri,
@@ -40,28 +39,28 @@ module.exports.JwksClient = class JwksClient {
       agentOptions: this.options.requestAgentOptions
     }, (err, res) => {
       if (err || res.statusCode < 200 || res.statusCode >= 300) {
-        this.logger('Failure:', res && res.body || err);
+        this.logger('Failure:', (res && res.body) || err)
         if (res) {
-          return cb(new JwksError(res.body && (res.body.message || res.body) || res.statusMessage || `Http Error ${res.statusCode}`));
+          return cb(new JwksError((res.body && (res.body.message || res.body)) || res.statusMessage || `Http Error ${res.statusCode}`))
         }
-        return cb(err);
+        return cb(err)
       }
-      
-      let keysToReturn = res.body.keys ? res.body.keys : res.body;
 
-      this.logger('Keys:', keysToReturn);
-      return cb(null, keysToReturn);
-    });
+      const keysToReturn = res.body.keys ? res.body.keys : res.body
+
+      this.logger('Keys:', keysToReturn)
+      return cb(null, keysToReturn)
+    })
   }
 
-  getSigningKeys(cb) {
+  getSigningKeys (cb) {
     this.getKeys((err, keys) => {
       if (err) {
-        return cb(err);
+        return cb(err)
       }
-      
+
       if (!keys) {
-        return cb(new JwksError('The JWKS endpoint did not contain any keys'));
+        return cb(new JwksError('The JWKS endpoint did not contain any keys'))
       }
 
       if (!keys.length) {
@@ -71,39 +70,45 @@ module.exports.JwksClient = class JwksClient {
       const signingKeys = keys
         .filter(key => key.use === 'sig' && key.kty === 'EC' && key.kid && (key.x && key.y))
         .map(key => {
-            return {
-              kid: key.kid,
-              public: jwkToPem(key),
-              private: key.d ? jwkToPem(key, {private: true}) : undefined
-            };
-        });
+          return {
+            kid: key.kid,
+            public: jwkToPem(key),
+            private: key.d ? jwkToPem(key, { private: true }) : undefined
+          }
+        })
 
       if (!signingKeys.length) {
-        return cb(new JwksError('The JWKS endpoint did not contain any signing keys'));
+        return cb(new JwksError('The JWKS endpoint did not contain any signing keys'))
       }
 
-      this.logger('Signing Keys:', signingKeys);
-      return cb(null, signingKeys);
-    });
+      this.logger('Signing Keys:', signingKeys)
+      return cb(null, signingKeys)
+    })
   }
 
-  getSigningKey(kid, cb) {
-    const vm = this;
-    this.logger(`Fetching signing key for '${kid}'`);
+  getSigningKey (kid, cb) {
+    this.logger(`Fetching signing key for '${kid}'`)
 
-    this.getSigningKeys(function(err, keys) {
-      if (err) {
-        return cb(err);
-      }
+    if (this.options.cache && this.cache.get(kid) !== undefined) {
+      const cachedKey = this.cache.get(kid)
+      cb(null, cachedKey)
+    } else {
+      this.getSigningKeys((err, keys) => {
+        if (err) {
+          return cb(err)
+        }
 
-      const key = keys.find(k => k.kid === kid);
-      if (key) {
-        return cb(null, key);
-      } else {
-        vm.logger(`Unable to find a signing key that matches '${kid}'`);
-        return cb(new SigningKeyNotFoundError(`Unable to find a signing key that matches '${kid}'`));
-      }
-    });
+        const key = keys.find(k => k.kid === kid)
+        if (key) {
+          if (this.options.cache) {
+            this.cache.set(kid, key);
+          }
+          return cb(null, key)
+        } else {
+          this.logger(`Unable to find a signing key that matches '${kid}'`)
+          return cb(new SigningKeyNotFoundError(`Unable to find a signing key that matches '${kid}'`))
+        }
+      })
+    }
   }
 }
-
