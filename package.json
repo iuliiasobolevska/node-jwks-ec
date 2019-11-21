@@ -1,6 +1,6 @@
 {
   "name": "jwks-ec",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Library to retrieve EC public keys from a JWKS endpoint",
   "main": "src/index.js",
   "types": "index.d.ts",
