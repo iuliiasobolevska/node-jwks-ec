@@ -2,7 +2,7 @@
   "name": "jwks-ec",
   "version": "1.0.0",
   "description": "Library to retrieve EC public keys from a JWKS endpoint",
-  "main": "lib/index.js",
+  "main": "src/index.js",
   "types": "index.d.ts",
   "dependencies": {
     "@types/express-jwt": "0.0.42",
