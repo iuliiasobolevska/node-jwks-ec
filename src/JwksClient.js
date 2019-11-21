@@ -65,8 +65,8 @@ module.exports.JwksClient = class JwksClient {
         .map(key => {
           return {
             kid: key.kid,
-            public: jwkToPem(key),
-            private: key.d ? jwkToPem(key, { private: true }) : undefined
+            publicKey: jwkToPem(key),
+            privateKey: key.d ? jwkToPem(key, { private: true }) : undefined
           }
         })
 
