@@ -1,9 +1,9 @@
-import jwt from 'jsonwebtoken';
+const jwt = require('jsonwebtoken');
 
-export function createToken(key, kid, payload) {
-  return jwt.sign(payload, key, { noTimestamp: true, algorithm: 'RS256', header: { alg: 'RS256', kid } });
+module.exports.createToken = function(key, kid, payload) {
+  return jwt.sign(payload, key, {  algorithm: 'ES256', header: { alg: 'ES256', kid } });
 }
 
-export function createSymmetricToken(key, payload) {
-  return jwt.sign(payload, key, { noTimestamp: true, algorithm: 'HS256', header: { alg: 'HS256' } });
+module.exports.createSymmetricToken = function(key, payload) {
+  return jwt.sign(payload, key, {  algorithm: 'ES256', header: { alg: 'ES256' } });
 }
