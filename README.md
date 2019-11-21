@@ -13,7 +13,7 @@ A library to retrieve EC signing keys from a JWKS (JSON Web Key Set) endpoint.
 You'll provide the client with the JWKS endpoint which exposes your signing keys. Using the `getSigningKey` you can then get the signing key that matches a specific `kid`.
 
 ```js
-const jwksClient = require('jwks-rsa');
+const jwksClient = require('jwks-ec');
 
 const client = jwksClient({
   strictSsl: true, // Default value
@@ -36,7 +36,7 @@ client.getSigningKey(kid, (err, key) => {
 In order to prevent a call to be made each time a signing key needs to be retrieved you can also configure a cache as follows. If a signing key matching the `kid` is found, this will be cached and the next time this `kid` is requested the signing key will be served from the cache instead of calling back to the JWKS endpoint.
 
 ```js
-const jwksClient = require('jwks-rsa');
+const jwksClient = require('jwks-ec');
 
 const client = jwksClient({
   cache: true,
@@ -47,7 +47,7 @@ const client = jwksClient({
 
 const kid = 'RkI5MjI5OUY5ODc1N0Q4QzM0OUYzNkVGMTJDOUEzQkFCOTU3NjE2Rg';
 client.getSigningKey(kid, (err, key) => {
-  const signingKey = key.publicKey || key.rsaPublicKey;
+  const signingKey = key.publicKey || key.privateKey;
 
   // Now I can use this to configure my Express or Hapi middleware
 });
@@ -60,7 +60,7 @@ example use case is providing a trusted private (i.e. enterprise/corporate) root
 certificate authority to establish TLS communication with the `jwks_uri`.
 
 ```js
-const jwksClient = require("jwks-rsa");
+const jwksClient = require("jwks-ec");
 const client = jwksClient({
   strictSsl: true, // Default value
   jwksUri: 'https://my-enterprise-id-provider/.well-known/jwks.json',
@@ -104,9 +104,9 @@ jwks Keys: +8ms [ { alg: 'ES256',
 
 This project is licensed under the MIT license. See the [LICENSE](LICENSE) file for more info.
 
-[npm-image]: https://img.shields.io/npm/v/jwks-rsa.svg?style=flat-square
+[npm-image]: https://img.shields.io/npm/v/jwks-ec.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/jwks-ec
-[license-image]: http://img.shields.io/npm/l/jwks-rsa.svg?style=flat-square
+[license-image]: http://img.shields.io/npm/l/jwks-ec.svg?style=flat-square
 [license-url]: #license
-[downloads-image]: http://img.shields.io/npm/dm/jwks-rsa.svg?style=flat-square
+[downloads-image]: http://img.shields.io/npm/dm/jwks-ec.svg?style=flat-square
 [downloads-url]: https://npmjs.org/package/jwks-ec
