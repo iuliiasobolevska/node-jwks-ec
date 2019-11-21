@@ -1,7 +1,7 @@
 {
-  "name": "jwks-es",
+  "name": "jwks-ec",
   "version": "1.0.0",
-  "description": "Library to retrieve ES public keys from a JWKS endpoint",
+  "description": "Library to retrieve EC public keys from a JWKS endpoint",
   "main": "lib/index.js",
   "types": "index.d.ts",
   "dependencies": {
@@ -48,17 +48,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/danielcherubini/node-jwks-es.git"
+    "url": "git+https://gitlab.com/danielcherubini/node-jwks-ec.git"
   },
   "keywords": [
     "jwks",
-    "es",
+    "ec",
     "jwt"
   ],
   "author": "Daniel Cherubini",
   "license": "MIT",
   "bugs": {
-    "url": "https://gitlab.com/danielcherubini/node-jwks-es/issues"
+    "url": "https://gitlab.com/danielcherubini/node-jwks-ec/issues"
   },
-  "homepage": "https://gitlab.com/danielcherubini/node-jwks-es#readme"
+  "homepage": "https://gitlab.com/danielcherubini/node-jwks-ec#readme"
 }
