@@ -1,14 +1,16 @@
 {
-  "name": "jwks-rsa",
-  "version": "1.6.0",
-  "description": "Library to retrieve RSA public keys from a JWKS endpoint",
+  "name": "jwks-es",
+  "version": "1.0.0",
+  "description": "Library to retrieve ES public keys from a JWKS endpoint",
   "main": "lib/index.js",
   "types": "index.d.ts",
   "dependencies": {
     "@types/express-jwt": "0.0.42",
     "debug": "^2.6.9",
     "jsonwebtoken": "^8.5.1",
+    "jwk-to-pem": "^2.0.1",
     "limiter": "^1.1.4",
+    "lru-cache": "^5.1.1",
     "lru-memoizer": "^2.0.1",
     "ms": "^2.1.1",
     "request": "^2.88.0"
@@ -39,29 +41,24 @@
     "typescript": "^3.5.1"
   },
   "scripts": {
-    "clean": "rimraf lib/",
-    "clean:ts": "rimraf ts-output/",
-    "compile": "babel -d lib/ src/",
-    "prepublish": "npm run clean && npm run compile",
-    "test:ts": "npm run clean:ts && tsc && NODE_ENV=test mocha --require babel-core/register --exit --timeout 5000 $(find ./ts-output -name *.tests.js)",
-    "test:js": "NODE_ENV=test mocha --require babel-core/register --exit --timeout 5000 $(find ./tests -name *.tests.js)",
-    "test": "npm run test:js && npm run test:ts",
-    "test-watch": "NODE_ENV=test mocha --require babel-core/register --exit --timeout 5000 $(find ./tests -name *.tests.js) --watch",
+    "test:js": "NODE_ENV=test mocha --exit --timeout 5000 $(find ./tests -name *.tests.js)",
+    "test": "npm run test:js",
+    "test-watch": "NODE_ENV=test mocha $(find ./tests -name *.tests.js) --watch",
     "release": "git tag $npm_package_version && git push && git push --tags && npm publish"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/auth0/node-jwks-rsa.git"
+    "url": "git+https://gitlab.com/danielcherubini/node-jwks-es.git"
   },
   "keywords": [
     "jwks",
-    "rsa",
+    "es",
     "jwt"
   ],
-  "author": "Auth0",
+  "author": "Daniel Cherubini",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/auth0/node-jwks-rsa/issues"
+    "url": "https://gitlab.com/danielcherubini/node-jwks-es/issues"
   },
-  "homepage": "https://github.com/auth0/node-jwks-rsa#readme"
+  "homepage": "https://gitlab.com/danielcherubini/node-jwks-es#readme"
 }

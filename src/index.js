@@ -1,10 +1,6 @@
-import { JwksClient } from './JwksClient';
+const { JwksClient } = require('./JwksClient');
 
-import * as errors from './errors';
-import { hapiJwt2Key, hapiJwt2KeyAsync } from './integrations/hapi';
-import { expressJwtSecret } from './integrations/express';
-import { koaJwtSecret } from './integrations/koa';
-import { passportJwtSecret } from './integrations/passport';
+const errors = require('./errors');
 
 module.exports = (options) => {
   return new JwksClient(options);
@@ -15,8 +11,3 @@ module.exports.JwksError = errors.JwksError;
 module.exports.JwksRateLimitError = errors.JwksRateLimitError;
 module.exports.SigningKeyNotFoundError = errors.SigningKeyNotFoundError;
 
-module.exports.expressJwtSecret = expressJwtSecret;
-module.exports.hapiJwt2Key = hapiJwt2Key;
-module.exports.hapiJwt2KeyAsync = hapiJwt2KeyAsync;
-module.exports.koaJwtSecret = koaJwtSecret;
-module.exports.passportJwtSecret = passportJwtSecret;

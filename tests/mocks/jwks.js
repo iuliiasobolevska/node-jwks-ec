@@ -1,6 +1,6 @@
-import nock from 'nock';
+const nock = require('nock');
 
-export function jwksEndpoint(host, certs) {
+module.exports.jwksEndpoint = function(host, certs) {
   return nock(host)
     .get('/.well-known/jwks.json')
     .reply(200, {
