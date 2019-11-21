@@ -3,27 +3,20 @@ const request = require('request')
 const jwkToPem = require('jwk-to-pem')
 const LRU = require('lru-cache')
 
-const JwksError = require('./errors/JwksError')
+const {JwksError} = require('./errors')
 const SigningKeyNotFoundError = require('./errors/SigningKeyNotFoundError')
-
-const {
-  rateLimitSigningKey
-} = require('./wrappers')
 
 module.exports.JwksClient = class JwksClient {
   constructor (options) {
     this.options = {
-      rateLimit: false,
       cache: false,
       strictSsl: true,
       ...options
     }
+
     this.logger = debug('jwks')
 
-    // Initialize wrappers.
-    if (this.options.rateLimit) {
-      this.getSigningKey = rateLimitSigningKey(this, options)
-    }
+    // Initialize Utils.
     if (this.options.cache) {
       this.cache = new LRU(options)
     }
@@ -88,7 +81,7 @@ module.exports.JwksClient = class JwksClient {
 
   getSigningKey (kid, cb) {
     this.logger(`Fetching signing key for '${kid}'`)
-
+   
     if (this.options.cache && this.cache.get(kid) !== undefined) {
       const cachedKey = this.cache.get(kid)
       cb(null, cachedKey)
