@@ -1,8 +1,8 @@
 import { SecretCallback, SecretCallbackLong } from 'express-jwt';
 
-declare function JwksRsa(options: JwksRsa.ClientOptions): JwksRsa.JwksClient;
+declare function JwksEc(options: JwksEc.ClientOptions): JwksEc.JwksClient;
 
-declare namespace JwksRsa {
+declare namespace JwksEc {
   class JwksClient {
     constructor(options: ClientOptions);
 
@@ -26,10 +26,11 @@ declare namespace JwksRsa {
     requestHeaders?: Headers;
   }
 
-  interface CertSigningKey {
+  interface SigningKey {
     kid: string;
     nbf: string;
     publicKey: string;
+    privateKey: string|undefined;
   }
 
   interface AgentOptions {
@@ -48,14 +49,6 @@ declare namespace JwksRsa {
     requestAgentOptions?: AgentOptions;
     handleSigningKeyError?(err: Error, cb: (err: Error) => void): any;
   }
-
-  interface RsaSigningKey {
-    kid: string;
-    nbf: string;
-    rsaPublicKey: string;
-  }
-
-  type SigningKey = CertSigningKey | RsaSigningKey;
 
   function expressJwtSecret(options: ExpressJwtOptions): SecretCallbackLong;
 
@@ -111,4 +104,4 @@ declare namespace JwksRsa {
   }
 }
 
-export = JwksRsa;
+export = JwksEc;
