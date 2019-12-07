@@ -19,6 +19,8 @@
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.7",
     "@types/nock": "^10.0.3",
+    "@typescript-eslint/eslint-plugin": "^2.10.0",
+    "@typescript-eslint/parser": "^2.10.0",
     "babel-cli": "^6.9.0",
     "babel-core": "^6.9.0",
     "babel-eslint": "^6.0.4",

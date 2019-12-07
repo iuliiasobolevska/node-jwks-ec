@@ -5,8 +5,25 @@ const LRU = require('lru-cache')
 
 const {JwksError} = require('./errors')
 const SigningKeyNotFoundError = require('./errors/SigningKeyNotFoundError')
+/**
+ * @callbck Callback
+ * @param {Error} error
+ * @param {object} key
+ */
 
+/**
+ * @typedef {object} JwksClientOptions
+ * @prop {boolean} cache
+ * @prop {boolean} strictSsl
+ */
+
+/**
+ * @class
+ */
 module.exports.JwksClient = class JwksClient {
+  /**
+   * @param {JwksClientOptions} options
+   */
   constructor (options) {
     this.options = {
       cache: false,
@@ -21,7 +38,9 @@ module.exports.JwksClient = class JwksClient {
       this.cache = new LRU(options)
     }
   }
-
+  /**
+   * @param {Callback} cb
+   */
   getKeys (cb) {
     this.logger(`Fetching keys from '${this.options.jwksUri}'`)
     request({
@@ -46,6 +65,9 @@ module.exports.JwksClient = class JwksClient {
     })
   }
 
+  /**
+   * @param {Callback} cb
+   */
   getSigningKeys (cb) {
     this.getKeys((err, keys) => {
       if (err) {
@@ -79,6 +101,11 @@ module.exports.JwksClient = class JwksClient {
     })
   }
 
+
+  /**
+   * @param {string} kid
+   * @param {Callback} cb
+   */
   getSigningKey (kid, cb) {
     this.logger(`Fetching signing key for '${kid}'`)
    
