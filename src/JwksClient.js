@@ -83,7 +83,7 @@ module.exports.JwksClient = class JwksClient {
       }
 
       const signingKeys = keys
-        .filter(key => key.use === 'sig' && key.kty === 'EC' && key.kid && (key.x && key.y))
+        .filter(key => key.kty === 'EC' && key.kid && (key.x && key.y))
         .map(key => {
           return {
             kid: key.kid,
@@ -108,7 +108,7 @@ module.exports.JwksClient = class JwksClient {
    */
   getSigningKey (kid, cb) {
     this.logger(`Fetching signing key for '${kid}'`)
-   
+
     if (this.options.cache && this.cache.get(kid) !== undefined) {
       const cachedKey = this.cache.get(kid)
       cb(null, cachedKey)
